@@ -2,9 +2,13 @@
 Experiment with Tidytext and EDH dataset
 
 
-Hello, I am experimenting with the tidytext package in R on the EDH dataset and I have encountered an interesting error I have no idea what to do with. 
+Hello, I am experimenting with the tidytext package in R on the EDH dataset and I have encountered two interesting errors I have no idea what to do with. 
+All mys teps and error messages are described within the script as comments, as well as what I am trying to achieve.
 
-1. Clone the repo
-2. Run the script ```EDH_tidy.R```
-3. I am creating a dataframe from Antonio's dataset from the [https://mplex.github.io/cedhar/EpigraphicNetwork.html](https://mplex.github.io/cedhar/EpigraphicNetwork.html) following the first three commands
-4. 
+Error 1 - non-utf encoding
+1. The script ```EDH_tidy.R```
+
+
+Error 2 - transposing list in R
+1. The script ```EDH_tidy_from_json.R```
+

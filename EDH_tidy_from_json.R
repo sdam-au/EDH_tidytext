@@ -8,26 +8,6 @@ library(rjson)
 library(utf8)
 library(jsonlite)
 
-# load data from Antonio's repo https://github.com/sdam-au/R-code, the next steps copied from  
-inscriptions <- load(file="data/epalln.Rdata")
-
-#confirm it is a list
-class(epalln)
-
-#select only certain attributes from the list
-EDH_inscriptions <- lapply(epalln, function (x) x[c("ID", "language", "material", "type_of_monument", 
-                                                    "findpost_ancient", "findspot_modern",
-                                                    "country","province_label", "not_after", "not_before", 
-                                                    "type_of_inscription", "diplomatic_text", "transcription")] )
-#transform list into a dataframe
-EDH_df <-as.data.frame(do.call(rbind, EDH_inscriptions))
-
-# deleting fifth column which had no name and no value (strange residue of Antonio's processing or the EDH itself)
-EDH_df <- EDH_df[,-5] 
-
-# confirm the fifth column called 'NA' doe no longer exist
-colnames(EDH_df) 
-
 
 # Cleaning of the epigraphic texts function
 
@@ -47,20 +27,38 @@ cleaning_edh_inscriptions <- function(original_text) {
 }
 
 
-# cleaning the dataset
-inscriptions_cleaned <- EDH_df %>%
-  mutate(text_clean = cleaning_edh_inscriptions(EDH_df$transcription))
 
-# received error: 
-# Error in gsub(pattern = "\\[[— ]+\\]", replacement = "", x = original_text,  : 
-# input string 45543 is invalid UTF-8 
+# load json data from Vojtech
+inscriptionsJSON <- fromJSON(file = "data/inscriptions_short.json")
 
-# failed to create new object with the clean text, 
-# inspect where the problem is: inscription 45543, the non-utf symbols \xad\xad\xad or also rendered as ���
+# load sample json for testing and debugging
+sample_json <- fromJSON(txt = "data/inscriptions_sample.json")
+# confirm it is a list
+class(sample_json)
+# list column names
+names(sample_json)
 
-print(EDH_df[45543,])
-print(EDH_df$transcription[[45543]])
+# transforming nested list into dataframe
+sample_df <- do.call(rbind, sample_json) %>% 
+  as.data.frame
 
-# I assume there are more non-utf characters in the text. I am seeking a permanent solution, how I can identify and get rid of them, so my cleaning script does not break in the middle and cleans the entire dataset.
+# second way how to transform list into dataframe
+sample_df <-as.data.frame(do.call(rbind, sample_json))
 
+# confirm it is a dataframe
+class(sample_df)
+
+
+# ideally this cleaning script should work, but it does not work on the list
+inscriptions_cleaned_sample <- sample_df %>% 
+  mutate(text_clean = cleaning_edh_inscriptions(sample_df$transcription))
+
+# unlisting json sample and running cleaning only on text transcription only, to make sure the cleaning script works
+sample_transcription <- as.data.frame(unlist(sample_json$transcription, recursive = TRUE, use.names = TRUE))
+head(sample_transcription)
+
+inscriptions_cleaned_sample <- sample_transcription %>% 
+  mutate(text_clean = cleaning_edh_inscriptions(sample_transcription$`unlist(sample_json$transcription, recursive = TRUE, use.names = TRUE)`))
+# I would like to run the cleaning script on the json file, but in order to have it in the right structure, I need to transpose the observations and attributes 
+# (so it has the longer rather than wider format), but I don't know how to do it with lists.
 
