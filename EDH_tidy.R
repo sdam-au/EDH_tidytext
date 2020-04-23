@@ -16,19 +16,13 @@ class(epalln)
 
 #select only certain attributes from the list
 EDH_inscriptions <- lapply(epalln, function (x) x[c("ID", "language", "material", "type_of_monument", 
-                                                    "findpost_ancient", "findspot_modern",
+                                                    "findspot_ancient", "findspot_modern",
                                                     "country","province_label", "not_after", "not_before", 
                                                     "type_of_inscription", "diplomatic_text", "transcription")] )
 #transform list into a dataframe
 EDH_df <-as.data.frame(do.call(rbind, EDH_inscriptions))
 
-# deleting fifth column which had no name and no value (strange residue of Antonio's processing or the EDH itself)
-EDH_df <- EDH_df[,-5] 
-
-## there is entry called "findpost_ancient", that is the problem
-                        
-                           
-# confirm the fifth column called 'NA' doe no longer exist
+# confirm all the columns are ok
 colnames(EDH_df) 
 
 
