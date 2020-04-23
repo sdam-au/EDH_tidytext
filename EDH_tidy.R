@@ -25,6 +25,9 @@ EDH_df <-as.data.frame(do.call(rbind, EDH_inscriptions))
 # deleting fifth column which had no name and no value (strange residue of Antonio's processing or the EDH itself)
 EDH_df <- EDH_df[,-5] 
 
+## there is entry called "findpost_ancient", that is the problem
+                        
+                           
 # confirm the fifth column called 'NA' doe no longer exist
 colnames(EDH_df) 
 
